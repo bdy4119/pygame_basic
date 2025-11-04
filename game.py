@@ -10,7 +10,11 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 
 # 화면 타이틀
-pygame.display.set_caption("My Game") # 게임 이름
+pygame.display.set_caption("Soda Game") # 게임 이름
+
+
+#FPS(frames per second) : 초당 프레임 수
+clock = pygame.time.Clock()
 
 
 # 배경 이미지
@@ -33,9 +37,16 @@ to_x = 0
 to_y = 0
 
 
+# 이동 속도
+speed = 0.3
+
+
 # 이벤트 루프
 running = True  # 게임 진행 여부
 while running :
+    # 프레임 수 설정
+    dt = clock.tick(60)
+
     # 사용자의 동작이 들어오는지 체크
     for event in pygame.event.get() :
         if event.type == pygame.QUIT :      # 사용자가 창을 닫을 경우
@@ -43,13 +54,13 @@ while running :
 
         if event.type == pygame.KEYDOWN :       # 키가 눌러졌는지
             if event.key == pygame.K_LEFT :     # 왼쪽
-                to_x -= 1
+                to_x -= speed
             elif event.key == pygame.K_RIGHT :  # 오른쪽
-                to_x += 1
+                to_x += speed
             elif event.key == pygame.K_UP :     # 위
-                to_y -= 1
+                to_y -= speed
             elif event.key == pygame.K_DOWN :   # 아래
-                to_y += 1
+                to_y += speed
 
         if event.type == pygame.KEYUP :         # 방향키를 떼면 멈춤
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT :
@@ -57,9 +68,10 @@ while running :
             elif event.key == pygame.K_UP or event.key == pygame.K_DOWN :
                 to_y = 0
 
-    character_x_pos += to_x
-    character_y_pos += to_y
+    character_x_pos += to_x * dt
+    character_y_pos += to_y * dt
 
+    # 화면 넘어가기 방지
     if character_x_pos < 0 :
         character_x_pos = 0
     elif character_x_pos > screen_width -  character_width:
