@@ -1,6 +1,7 @@
 import pygame
 
 # 초기화 (반드시 해줘야함)
+pygame.init()
 
 # 화면 크기 설정
 screen_width = 480  # 가로
@@ -50,6 +51,18 @@ enemy_height= character_size[1]
 
 enemy_x_pos = (screen_width / 2) - (enemy_width / 2)
 enemy_y_pos = (screen_height / 2) - (enemy_height / 2)
+
+
+# 폰트 정의
+game_font = pygame.font.Font(None, 40)
+
+
+# 총 시간
+total_time = 10
+
+
+# 시작 시간 정보
+start_ticks = pygame.time.get_ticks()   # 시작 tick 받아오기
 
 
 # 이벤트 루프
@@ -106,8 +119,17 @@ while running :
 
 
     # 충돌 체크
-    if character_rect.colliderect(enemy_rect) :   # 해당 사각형 위주로 충돌이 있었는지
+    if character_rect.colliderect(enemy_rect) :   # 해당 사각형 위주로 충돌이 발생했는지
         print("충돌 발생")
+        running = False
+
+
+    # 타이머 넣기
+    # 경과 시간
+    elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000   # 경과시간(ms)을 1000으로 나누어 초 단위로 표시
+
+    timer = game_font.render(str(int(total_time - elapsed_time)), True, (0, 0, 0))
+    if total_time - elapsed_time <= 0 :
         running = False
 
 
@@ -117,12 +139,18 @@ while running :
     screen.blit(character, (character_x_pos, character_y_pos))
     screen.blit(enemy, (enemy_x_pos, enemy_y_pos))
 
+    screen.blit(timer, (10, 10))
+
     # 게임 화면을 다시 그리기 (매 프레임마다 화면을 그려줘야함)
     pygame.display.update()
     """
     RGB값으로 배경 지정
     - screen.fill((0, 0, 255))
     """
+
+
+# 대기
+pygame.time.delay(500)
 
 
 # pygame 종료
