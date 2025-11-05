@@ -22,14 +22,14 @@ background = pygame.image.load("C:\\Users\\PC\\Desktop\\_study\\_python\\_study\
 
 
 # 캐릭터(스프라이트) 불러오기
-character = pygame.image.load("C:\\Users\\PC\\Desktop\\_study\\_python\\_study\\pygame_basic\\soda2.png")
+character = pygame.image.load("C:\\Users\\PC\\Desktop\\_study\\_python\\_study\\pygame_basic\\soda.png")
 
-character_size = character.get_rect().size # 이미지 크기 구해옴
-character_width = character_size[0] # 캐릭터 가로 크기
-character_height= character_size[1] # 캐릭터 세로 크기
+character_size = character.get_rect().size  # 이미지 크기 구해옴
+character_width = character_size[0]         # 캐릭터 가로 크기
+character_height= character_size[1]         # 캐릭터 세로 크기
 
 character_x_pos = (screen_width / 2) - (character_width / 2)                    # 화면 가로의 절반의 위치
-character_y_pos = screen_height - character_height    # 화면 세로 크기의 맨 아래 위치
+character_y_pos = screen_height - character_height                              # 화면 세로 크기의 맨 아래 위치
 
 
 # 이동 좌표
@@ -39,6 +39,17 @@ to_y = 0
 
 # 이동 속도
 speed = 0.3
+
+
+# 적 캐릭터
+enemy = pygame.image.load("C:\\Users\\PC\\Desktop\\_study\\_python\\_study\\pygame_basic\\enemy_soda.png")
+
+enemy_size = character.get_rect().size
+enemy_width = character_size[0]
+enemy_height= character_size[1]
+
+enemy_x_pos = (screen_width / 2) - (enemy_width / 2)
+enemy_y_pos = (screen_height / 2) - (enemy_height / 2)
 
 
 # 이벤트 루프
@@ -71,20 +82,40 @@ while running :
     character_x_pos += to_x * dt
     character_y_pos += to_y * dt
 
-    # 화면 넘어가기 방지
+    # 화면 넘어가기 방지(가로)
     if character_x_pos < 0 :
         character_x_pos = 0
     elif character_x_pos > screen_width -  character_width:
         character_x_pos = screen_width -  character_width
-    elif character_y_pos < 0 :
+    
+    # 화면 넘어가기 방지(세로)
+    if character_y_pos < 0 :
         character_y_pos = 0
     elif character_y_pos > screen_height -  character_height:
         character_y_pos = screen_height -  character_height
 
 
+    # 충돌처리를 위한 rect 정보 업데이트
+    character_rect = character.get_rect()
+    character_rect.left = character_x_pos
+    character_rect.top = character_y_pos
+
+    enemy_rect = enemy.get_rect()
+    enemy_rect.left = enemy_x_pos
+    enemy_rect.top = enemy_y_pos
+
+
+    # 충돌 체크
+    if character_rect.colliderect(enemy_rect) :   # 해당 사각형 위주로 충돌이 있었는지
+        print("충돌 발생")
+        running = False
+
+
     # 배경 위치 지정
     screen.blit(background, (0, 0))
+
     screen.blit(character, (character_x_pos, character_y_pos))
+    screen.blit(enemy, (enemy_x_pos, enemy_y_pos))
 
     # 게임 화면을 다시 그리기 (매 프레임마다 화면을 그려줘야함)
     pygame.display.update()
